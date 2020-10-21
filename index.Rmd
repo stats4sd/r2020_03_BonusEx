@@ -42,7 +42,7 @@ Solutions are embedded in the chunks - but try to solve them yourself before loo
 
 ## Question 1
 
-*1.1 Produce a histogram based on the `Year` variable. This will show the frequency distribution of unique songs per year*
+*1.1 Produce a histogram based on the `Year` variable from the `ClassicRock` data. This will show the frequency distribution of unique songs per year*
 
 ```{r gg1, exercise=TRUE}
 
