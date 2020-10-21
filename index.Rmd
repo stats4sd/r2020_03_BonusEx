@@ -193,5 +193,5 @@ ClassicRock %>%
       summarise(CombinedTotal=sum(TotalPlays)) %>%
         ggplot(aes(y=CombinedTotal,x=Year))+
          geom_line()+
-           labs(y="Total Plays of Songs Across Classic Rock Radio Stations",x="Year of Release")
+           labs(y="Total Combined Plays of Songs",x="Year of Release",main="Song Plays on Classic Rock Radio by Release Year")
 ```
