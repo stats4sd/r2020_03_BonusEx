@@ -236,7 +236,7 @@ There are lots of different ways to get to this answer!
 #This one requires a little more lateral thinking!
 
 #If you see Metallica in your final output you have gone wrong.
-
+#(Although if you see Metallica in your own playlist, you have gone right) 
 
 #"All songs in the same calendar year" can be reframed, since only if this is true would the minimum year be equal to the maximum year
 #So we first group by artist
