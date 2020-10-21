@@ -26,7 +26,7 @@ ClassicRock<-readRDS("ClassicRock.RDS")
 
 This set of exercises will recap over the concepts from Modules 1 to 3, working with R to visualise patterns in data and manipulate and summarise data.
 
-In this series of exercises we will use a dataset called `ClassicRock`, which is a list of every song which was played in June 2014 on the 25 largest "Classic Rock" radio stations in America. You can see this embedded below. The variables within the data are hopefully self explanatory - `Title`,`Artist`,`Year` and `TotalPlays`. Year indicates the year of release.
+In this series of exercises we will use a dataset called `ClassicRock` This contains data on every song which was played in June 2014 on the 25 largest "Classic Rock" radio stations in America, and how many times each song was played. You can see this embedded below. The variables within the data are hopefully self explanatory - `Title`,`Artist`,`Year` and `TotalPlays`. Year indicates the year of release.
 
 ```{r,echo=FALSE,warning-FALSE}
 DT::datatable(ClassicRock)
@@ -34,10 +34,12 @@ DT::datatable(ClassicRock)
 
 
 You can read more about the data here if you are interested: https://fivethirtyeight.com/features/why-classic-rock-isnt-what-it-used-to-be/
-
 (Although, as a warning, this may contain spoilers for some of the questions!)
 
-Solutions are embedded in the chunks - but try to solve them yourself before looking.
+Like all good data analysis exercises, this exercise naturally comes with it's own Spotify playlist: https://open.spotify.com/playlist/1kgLJDMbs7nQeAtTW5VD17?si=KW80kH5WTyG791bCxrAVgQ
+
+
+Solutions are embedded in the chunks - but try to solve them yourself before looking!
 
 
 ## Question 1
