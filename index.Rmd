@@ -156,32 +156,20 @@ The questions in this section may have more than one method to get to the final 
 
 
 ```{r x31-solution}
+
+#We first need to group by artist
+#Then summarise to get the sum of plays
+#And then filter to find the maximum of this sum
+
+#And the answer is... Led Zeppelin
+
 ClassicRock %>% 
   group_by(Artist) %>%
     summarise(CombinedTotal=sum(TotalPlays)) %>%
       filter(CombinedTotal==max(CombinedTotal))
 ```
 
-
-*3.2 Find out the most popular "one-hit wonder" in classic rock radio. In other words - I would like to find the song with the highest number of plays, among artists who only had one of their songs played on the classic rock radio stations*
-
-
-```{r x32, exercise=TRUE}
-
-```
-
-
-```{r x32-solution}
-ClassicRock %>% 
-  group_by(Artist) %>%
-    mutate(UniqueSongs=n()) %>%
-      filter(UniqueSongs==1) %>%
-        ungroup() %>%
-         filter(TotalPlays==max(TotalPlays))
-```
-There are lots of different ways to get to this answer!
-
-*3.3 Produce a line plot showing the trend over time of the sum total of plays of all songs combined for each year. Label the axes clearly*
+*3.2 Produce a line plot showing the trend over time of the sum total of plays of all songs combined for each year. Label the axes clearly*
 
 ```{r x33, exercise=TRUE}
 
@@ -190,6 +178,11 @@ There are lots of different ways to get to this answer!
 
 
 ```{r x33-solution}
+#We need to group by year and then summarise to get the total number of plays per year
+#And then pipe this into ggplot, and map up our aesthetics. FOr a classic line plot showing trends over time we would have the x axis being year and y axis being total plays
+#Then using the line geometry
+#And the labs functions for labelling
+
 ClassicRock %>%
     group_by(Year) %>%
       summarise(CombinedTotal=sum(TotalPlays)) %>%
@@ -197,3 +190,82 @@ ClassicRock %>%
          geom_line()+
            labs(y="Total Combined Plays of Songs",x="Year of Release",main="Song Plays on Classic Rock Radio by Release Year")
 ```
+
+
+
+*3.3 Find out the most popular "one-hit wonder" in classic rock radio. In other words - I would like to find the song with the highest number of plays, among artists who only had one of their songs played on the classic rock radio stations*
+
+
+```{r x32, exercise=TRUE}
+
+```
+
+
+```{r x32-solution}
+#There are a couple of tricks to get to this one
+
+#We need to first group by artist
+#We could use summarise here - but we would also have to remember to summarise the TotalPlays variable as well as we are still going to need this
+#But since we are only interested in the groups with one entry, any summary function will do as mean, min, max, median will all be the same, which will be the original value!
+#Then filter to just those with 1 song
+#Then filter among that subset to the max of total plays
+#Sequencing of the commands is crucial here! Flip the final two lines around, or combine them in the same line and you will not reach the correct answer
+
+#American radio clearly need to learn some more Phil Collins songs. As if 'Against All Odds' isnt on their playlist!!?
+
+ClassicRock %>% 
+  group_by(Artist) %>%
+    summarise(UniqueSongs=n(),TotalPlays=mean(TotalPlays)) %>%
+      filter(UniqueSongs==1) %>%
+          filter(TotalPlays==max(TotalPlays))
+```
+There are lots of different ways to get to this answer!
+
+
+
+
+*3.4 I am interested to find a list of artists who had extremely short, but very productive careers. Find me a list of artists where all of their songs in the data were released in the same calendar year, and who also have at least three songs with more than 5 plays*
+
+
+```{r x321, exercise=TRUE}
+
+
+```
+```{r x321-solution}
+
+#This one requires a little more lateral thinking!
+
+#If you see Metallica in your final output you have gone wrong.
+
+
+#"All songs in the same calendar year" can be reframed, since only if this is true would the minimum year be equal to the maximum year
+#So we first group by artist
+#But here I next need to mutate rather than summarise. I still have further steps I need to make at 'song' level rather than 'artist' level
+#If I summarise i won't be able to consider the criteria on total plays - so instead I mutate which adds a new column to the original data
+#I can then filter to only include songs where first and last are equal
+#And then filter only to the songs where Total Plays is greater than 5. 
+#Note that the order matters here. If i did this step first, I would get an incorrect answer because Metallica would be included in my final answer. 
+#All of Metallica's songs with more than 5 plays came from within the same year. But they also had other songs with less than 5 plays from other years so they are not a correct answer.
+#Finally I can summarise the number of songs using n() - the grouping is carried forward from earlier
+#And filter to only those where there are 3 or more songs
+#I also specifcally asked just for the artist in the question so I threw in a select at the end for good measure
+
+ClassicRock %>% 
+  group_by(Artist) %>%
+    mutate(first=min(Year),last=max(Year)) %>%
+      filter(first==last) %>%
+        filter(TotalPlays>5) %>%
+          summarise(Over5Plays=n())%>%
+            filter(Over5Plays>=3) %>%
+              select(Artist)
+
+
+
+
+```
+
+
+
+
+
+
