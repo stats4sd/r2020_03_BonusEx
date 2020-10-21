@@ -205,17 +205,22 @@ ClassicRock %>%
 #There are a couple of tricks to get to this one
 
 #We need to first group by artist
-#We could use summarise here - but we would also have to remember to summarise the TotalPlays variable as well as we are still going to need this
-#But since we are only interested in the groups with one entry, any summary function will do as mean, min, max, median will all be the same, which will be the original value!
-#Then filter to just those with 1 song
+#We could use summarise here - but this will cause problems later. I am looking for a song rather than an artist
+#If i summarise I will lose the song titles from the data, since there is no way of summarising 'down' the song title
+#So I need to use mutate - to add the column into the existing data
+##Then filter to just those with 1 song
 #Then filter among that subset to the max of total plays
-#Sequencing of the commands is crucial here! Flip the final two lines around, or combine them in the same line and you will not reach the correct answer
+#But before that last step I need to have ungrouped my data!
+#Otherwise it will look at the maximum value by artist, rather than the maximum value overall.
+#So after the mutate, which is the last operation i need to carry out group by group, i need to make sure i ungroup
+#Sequencing of the commands is crucial here! Flip the final two lines around, or combine them in the same line, or put the ungroup in the wrong place and you will not reach the correct answer
 
 #American radio clearly need to learn some more Phil Collins songs. As if 'Against All Odds' isnt on their playlist!!?
 
 ClassicRock %>% 
   group_by(Artist) %>%
-    summarise(UniqueSongs=n(),TotalPlays=mean(TotalPlays)) %>%
+    mutate(UniqueSongs=n()) %>%
+      ungroup() %>%
       filter(UniqueSongs==1) %>%
           filter(TotalPlays==max(TotalPlays))
 ```
