@@ -1,0 +1,197 @@
+---
+title: "Modules 1 & 2: Additional Exercises"
+output: 
+  learnr::tutorial:
+    progressive: true
+    allow_skip: true
+    df_print: paged
+runtime: shiny_prerendered
+description: >
+  Learn to manipulate data with the package dplyr.
+---
+
+```{r setup, include=FALSE}
+library(dplyr)
+library(ggplot2)
+
+library(learnr)
+library(DT)
+tutorial_options(exercise.timelimit = 10)
+options(max.print=50)
+ClassicRock<-readRDS("ClassicRock.RDS")
+
+```
+
+## Overview and data
+
+This set of exercises will recap over the concepts from Modules 1 to 3, working with R to visualise patterns in data and manipulate and summarise data.
+
+In this series of exercises we will use a dataset called `ClassicRock`, which is a list of every song which was played in June 2014 on the 25 largest "Classic Rock" radio stations in America. You can see this embedded below. The variables within the data are hopefully self explanatory - `Title`,`Artist`,`Year` and `TotalPlays`. Year indicates the year of release.
+
+```{r,echo=FALSE,warning-FALSE}
+DT::datatable(ClassicRock)
+```
+
+
+You can read more about the data here if you are interested: https://fivethirtyeight.com/features/why-classic-rock-isnt-what-it-used-to-be/
+
+(Although, as a warning, this may contain spoilers for some of the questions!)
+
+Solutions are embedded in the chunks - but try to solve them yourself before looking.
+
+
+## Question 1
+
+*1.1 Produce a histogram based on the `Year` variable. This will show the frequency distribution of unique songs per year*
+
+```{r gg1, exercise=TRUE}
+
+```
+
+```{r gg1-solution}
+ggplot(data=ClassicRock,aes(x=Year))+
+  geom_histogram()
+```
+
+*1.2 Make a scatter plot of year of release against total number of plays, and consider whether they might be any trend in this relationship. Also consider if you can see any major limitations of this particular choice of plot for these two variables*
+
+```{r gg2, exercise=TRUE}
+
+```
+
+```{r gg2-solution}
+ggplot(data=ClassicRock,aes(x=Year,y=TotalPlays))+
+  geom_point()+
+    geom_smooth()
+
+#It seems that not only are there more songs from the late 1970s, as seen clearly in the histogram, songs from that time period also have more plays than songs from earlier or later
+
+#A limitation here is that a lot of points may be on top of each other - e.g. where more than one song from the same year has the same number of plays
+```
+
+## Question 2
+*2.1: Find the mean, median and maximum number of times these songs were played on the radio*
+
+```{r x10, exercise=TRUE}
+
+```
+
+```{r x10-solution}
+ClassicRock %>%
+  summarise(mean(TotalPlays),median(TotalPlays),max(TotalPlays))
+```
+*2.1: Find which song had the highest number of total plays in this data*
+
+```{r x100, exercise=TRUE}
+
+```
+
+```{r x100-solution}
+
+#Could also be done using arrange. 
+#Or setting using the 142 from the previous example in the filter instead of max(TotalPlays)
+
+ClassicRock %>%
+  filter(TotalPlays==max(TotalPlays))
+```
+
+
+*2.3: I am interested to look at the songs of my favorite band - Van Halen. Use the filter function to produce a subset of just the songs of Van Halen*
+
+```{r x1, exercise=TRUE}
+
+```
+
+```{r x1-solution}
+filter(ClassicRock,Artist=="Van Halen")
+```
+*2.4 Pipe from the solution of 2.3 into another function which can sort the songs of Van Halen, so that the song with the highest number of total plays is at the top*
+
+```{r x12, exercise=TRUE}
+
+```
+
+```{r x12-solution}
+filter(ClassicRock,Artist=="Van Halen") %>%
+  arrange(desc(TotalPlays))
+```
+
+*2.5 Although (or maybe because?) they are my favourite band, I refuse to acknowledge the music of Van Halen after the lead vocalist David Lee Roth left the band in 1985. So I would like to do some comparisons from this data between the amazing original lineup and the terrible replacement lineup. Pipe from the solution of 2.3 to create a new variable, called `LineUp` which takes the value 'Original' for the years up to and including 1985, and 'Replacement' for 1986 onwards*
+
+Hint: The easiest way to do this will be to use the ifelse() function, which you may not have encountered yet. It requires three arguments - firstly a logical statement, then what value the new variable should take if the statement is true, then the value the new variable should take if the statement is false.
+
+If you need more help, see if can find this looking online.
+
+```{r x13,exercise=TRUE}
+
+```
+
+```{r x13-solution}
+filter(ClassicRock,Artist=="Van Halen") %>%
+  mutate(LineUp=ifelse(Year<=1985,"Original","Replacement"))
+```
+*2.6 Now piping from the output of 2.5, summarise the results by the new LineUp variable, to show both the number of different songs played on the radio and the sum total of the number of plays combined across songs for each lineup of the band.*
+
+```{r x14, exercise=TRUE}
+
+```
+
+```{r x14-solution}
+filter(ClassicRock,Artist=="Van Halen") %>%
+  mutate(LineUp=ifelse(Year<=1985,"Original","Replacement")) %>%
+    group_by(LineUp) %>%
+      summarise(DifferentSongs=n(),SumTotal=sum(TotalPlays))
+```
+## Question 3
+
+The questions in this section may have more than one method to get to the final answer, so the code in the solutions may not match exactly the route that you took. But the answers from running the code should be the same.
+
+*3.1 Determine which artist had the highest number of combined plays across all of their songs.*
+
+```{r x31, exercise=TRUE}
+
+```
+
+
+```{r x31-solution}
+ClassicRock %>% 
+  group_by(Artist) %>%
+    summarise(CombinedTotal=sum(TotalPlays)) %>%
+      filter(CombinedTotal==max(CombinedTotal))
+```
+
+
+*3.2 Find out the most popular "one-hit wonder" in classic rock radio. In other words - I would like to find the song with the highest number of plays, among artists who only had one of their songs played on the classic rock radio stations*
+
+
+```{r x32, exercise=TRUE}
+
+```
+
+
+```{r x32-solution}
+ClassicRock %>% 
+  group_by(Artist) %>%
+    mutate(UniqueSongs=n()) %>%
+      filter(UniqueSongs==1) %>%
+        ungroup() %>%
+         filter(TotalPlays==max(TotalPlays))
+```
+There are lots of different ways to get to this answer!
+
+*3.3 Produce a line plot showing the trend over time of the sum total of plays of all songs combined for each year. Label the axes clearly*
+
+```{r x33, exercise=TRUE}
+
+```
+
+
+
+```{r x33-solution}
+ClassicRock %>%
+    group_by(Year) %>%
+      summarise(CombinedTotal=sum(TotalPlays)) %>%
+        ggplot(aes(y=CombinedTotal,x=Year))+
+         geom_line()+
+           labs(y="Total Plays of Songs Across Classic Rock Radio Stations",x="Year of Release")
+```
