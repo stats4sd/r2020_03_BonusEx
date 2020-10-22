@@ -161,6 +161,8 @@ filter(ClassicRock,Artist=="Van Halen") %>%
 
 The questions in this section may have more than one method to get to the final answer, so the code in the solutions may not match exactly the route that you took. But the answers from running the code should be the same.
 
+Try to break down these questions into smaller chunks - which you can try to match to R functions you have learnt about. And try to work out all the steps that are going to be needed in advance. And check the result after every intermediate step, to make sure if it produced what you were expecting it to!
+
 *3.1 Determine which artist had the highest number of combined plays across all of their songs.*
 
 ```{r x31, exercise=TRUE}
@@ -184,7 +186,7 @@ ClassicRock %>%
 #And the answer is... Led Zeppelin
 ```
 
-*3.2 Produce a line plot showing the trend over time of the sum total of plays of all songs combined for each year. Label the axes clearly*
+*3.2 Produce a line plot showing the trend over time in the total plays of all songs combined for each year of release. Label the axes clearly*
 
 ```{r x33, exercise=TRUE}
 
@@ -207,8 +209,58 @@ ClassicRock %>%
 ```
 
 
+*3.3 I would like to try to answer an age old question. Who is more popular - The Beatles or The Rolling Stones?* 
 
-*3.3 Find out the most popular "one-hit wonder" in classic rock radio. In other words - I would like to find the song with the highest number of plays, among artists who only had one of their songs played on the classic rock radio stations*
+*Make a plot similar to 3.2, showing total plays by year of release, but with one line for just songs by The Beatles and one line for just songs by The Rolling Stones. I would also like to only consider songs released up to and including 1969*
+
+*Use different colours for each band - yellow for The Beatles (like the submarine) and brown for The Rolling Stones (like the sugar). Modify the appearance of the plot so that the axis labels look sensible, and the lines can be seen clearly (but without changing from the suggested colours)*
+
+```{r x3x, exercise=TRUE}
+
+```
+
+
+
+```{r x3x-solution}
+
+#first trick here. From some reason the Artist is coded in the data as "Rolling Stones" not "The Rolling Stones"
+
+#using a filter we can select these two artists using an OR statement - not an AND.
+#An and statement would be looking for any song which was performed by both The Beatles and also The Rolling Stones.
+
+#Then we can add artist into the group_by line to summarise by both artist and year.
+
+#The basic plot is then very similar to 3.2 - but with artist mapped to the colour aesthetic
+#I'm chosing to restrict the time range using the scale function within ggplot2; but you could also have made a filter for this
+
+#After you set my colour choices, using scale_colour_manual (making sure they are in the correct order), you should see two major visual problems with the graph:
+#1. The yellow is barely visible
+#2. The x axis is a little weirdly spaced
+
+#1 I can fix by using the themes - both colours will show up more clearly on a dark theme. I can use the build in dark theme by adding a call to theme_dark(). I also decided to make the lines a bit bigger using the size argument in geom_line so the lines are a bit more visible.
+#2. I set my own breaks in the scale_x_continuous function so that every year was labelled. This makes the axis easier to read.
+
+ClassicRock %>%
+  filter(Artist=="The Beatles" | Artist =="Rolling Stones") %>%
+    group_by(Artist,Year) %>%
+      summarise(CombinedTotal=sum(TotalPlays)) %>%
+        ggplot(aes(y=CombinedTotal,x=Year,colour=Artist))+
+         geom_line(size=2)+
+            scale_color_manual(values=c("brown","yellow"))+
+           labs(y="Total Combined Plays of Songs",x="Year of Release",
+                title="Song Plays on Classic Rock Radio by Release Year",subtitle="Beatles vs Stones")+
+            scale_x_continuous(limits=c(1961,1969),breaks=1961:1969)+
+              theme_dark()
+
+#Looking at the plot - I am surprised! There is only one release year when both bands are active, in which Beatles songs had more airplay than Stones.
+```
+
+
+
+
+
+
+*3.4 Find out the most popular "one-hit wonder" in classic rock radio. In other words - I would like to find the song with the highest number of plays, among artists who only had one of their songs played on the classic rock radio stations*
 
 
 ```{r x32, exercise=TRUE}
@@ -242,12 +294,10 @@ ClassicRock %>%
 #American radio clearly need to learn some more Phil Collins songs. As if 'Against All Odds' isnt on their playlist!!?
 
 ```
-There are lots of different ways to get to this answer!
 
 
 
-
-*3.4 I am interested to find a list of artists who had extremely short, but very productive careers. Find me a list of artists where all of their songs in the data were released in the same calendar year, and who also have at least three songs with more than 5 plays*
+*3.5 I am interested to find a list of artists who had extremely short, but very productive careers. Find me a list of artists where all of their songs in the data were released in the same calendar year, and who also have at least three songs with more than 5 plays*
 
 
 ```{r x321, exercise=TRUE}
@@ -283,7 +333,7 @@ ClassicRock %>%
               select(Artist)
 
 
-
+#Well done if you got the same answer here, even if you took a different route!
 
 ```
 
