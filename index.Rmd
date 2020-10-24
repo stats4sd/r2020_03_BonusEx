@@ -211,9 +211,9 @@ ClassicRock %>%
 
 *3.3 I would like to try to answer an age old question. Who is more popular - The Beatles or The Rolling Stones?* 
 
-*Make a plot similar to 3.2, showing total plays by year of release, but with one line for just songs by The Beatles and one line for just songs by The Rolling Stones. I would also like to only consider songs released up to and including 1969*
+*Make a plot similar to 3.2, showing total plays by year of release, but with one line for just songs by The Beatles and one line for just songs by The Rolling Stones. Only consider songs released up between 1960 and 1969.*
 
-*Use different colours for each band - yellow for The Beatles (like the submarine) and brown for The Rolling Stones (like the sugar). Modify the appearance of the plot so that the axis labels look sensible, and the lines can be seen clearly (but without changing from the suggested colours)*
+*Use different colours for each band - yellow for The Beatles (like the submarine) and brown for The Rolling Stones (like the sugar). Modify the appearance of the plot so that the axis labels look nice, and also so that the lines can be seen clearly (but without changing from the suggested colours!)*
 
 ```{r x3x, exercise=TRUE}
 
