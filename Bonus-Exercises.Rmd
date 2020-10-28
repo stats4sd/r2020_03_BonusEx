@@ -1,0 +1,172 @@
+
+
+## Overview and data
+
+This set of exercises will recap over the concepts from Modules 1 to 3, working with R to visualise patterns in data and manipulate and summarise data.
+
+In this series of exercises we will use a dataset called `ClassicRock` This contains data on every song which was played in June 2014 on the 25 largest "Classic Rock" radio stations in America, and how many times each song was played. The variables within the data are hopefully self explanatory - `Title`,`Artist`,`Year` and `TotalPlays`. Year indicates the year of release.
+
+
+```{r}
+library(dplyr)
+library(ggplot2)
+
+ClassicRock<-read.csv("ClassicRock.csv")
+
+
+```
+
+You can read more about the data here if you are interested: https://fivethirtyeight.com/features/why-classic-rock-isnt-what-it-used-to-be/
+(Although, as a warning, this may contain spoilers for some of the questions!)
+
+Like all good data analysis exercises, this exercise naturally comes with it's own Spotify playlist: https://open.spotify.com/playlist/1kgLJDMbs7nQeAtTW5VD17?si=KW80kH5WTyG791bCxrAVgQ
+
+
+Solutions are provided in a seperate file - but try to solve them yourself before looking!
+
+
+## Question 1
+
+*1.1 Produce a histogram based on the `Year` variable from the `ClassicRock` data. This will show the frequency distribution of unique songs per year*
+
+```{r}
+
+```
+
+
+
+*1.2 Make a scatter plot of year of release against total number of plays, and consider whether they might be any trend in this relationship. Also consider if you can see any major limitations of this particular choice of plot for these two variables*
+
+
+```{r}
+
+```
+
+
+
+## Question 2
+*2.1: Find the mean, median and maximum number of times the songs from the `ClassicRock` data were played on the radio*
+
+
+```{r}
+
+```
+
+
+*2.2: Find which song had the highest number of total plays*
+
+
+
+```{r}
+
+```
+
+
+
+
+
+*2.3: I am interested to look at which songs of my favorite band, Van Halen, made it onto the radio stations. Use the filter function to produce a subset of just the songs of Van Halen*
+
+
+```{r}
+
+```
+
+
+
+*2.4 Pipe from the solution of 2.3 into another function which can sort the songs of Van Halen, so that the song with the highest number of total plays is at the top*
+
+
+```{r}
+
+```
+
+
+*2.5 Although (or maybe because?) they are my favourite band, I refuse to acknowledge the music of Van Halen after the lead vocalist, David Lee Roth, left the band in 1985.*
+
+So I would like to do some comparisons from this data between the amazing original lineup and the terrible replacement lineup. Pipe from the solution of 2.3 to create a new variable, called `LineUp` which takes the value 'Original' for the years up to and including 1985, and 'Replacement' for 1986 onwards
+
+
+```{r}
+
+```
+
+
+
+*2.6 Now piping from the output of 2.5, summarise the results by the new LineUp variable, to show both the number of different songs played on the radio and the sum of the number of total plays combined across the songs from each lineup of the band.*
+
+
+```{r}
+
+```
+
+
+## Question 3
+
+The questions in this section may have more than one method to get to the final answer, so the code in the solutions may not match exactly the route that you took. But the answers from running the code should be the same.
+
+Try to break down these questions into smaller chunks - which you can try to match to R functions you have learnt about. And try to work out all the steps that are going to be needed in advance. And check the result after every intermediate step, to make sure if it produced what you were expecting it to!
+
+*3.1 Determine which artist had the highest number of combined plays across all of their songs.*
+
+
+```{r}
+
+```
+
+
+
+*3.2 Produce a line plot showing the trend over time in the total plays of all songs combined for each year of release. Label the axes clearly*
+
+
+```{r}
+
+```
+
+
+
+*3.3 I would like to try to answer an age old question. Who is more popular - The Beatles or The Rolling Stones?* 
+
+Make a plot similar to 3.2, showing total plays by year of release, but with one line for just songs by The Beatles and one line for just songs by The Rolling Stones. Only consider songs released up between 1960 and 1969.
+
+Use different colours for each band - yellow for The Beatles (like the submarine) and brown for The Rolling Stones (like the sugar). Modify the appearance of the plot so that the axis labels look nice, and also so that the lines can be seen clearly (but without changing from the suggested colours!)
+
+
+```{r}
+
+```
+
+
+
+
+
+
+
+
+*3.4 Find out the most popular "one-hit wonder" in classic rock radio.*
+In other words - I would like to find the song with the highest number of plays, among artists who only had one of their songs played on the classic rock radio stations
+
+
+
+```{r}
+
+```
+
+
+
+
+
+*3.5 I am interested to find a list of artists who had extremely short, but very productive careers*.
+Find me a list of artists where all of their songs in the data were released in the same calendar year, and who also have at least three songs with more than 5 plays
+
+
+```{r}
+
+```
+
+
+
+
+
+
+

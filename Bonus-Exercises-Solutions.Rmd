@@ -1,0 +1,330 @@
+
+```{r}
+library(dplyr)
+library(ggplot2)
+
+ClassicRock<-read.csv("ClassicRock.csv")
+
+
+```
+
+## Overview and data
+
+This set of exercises will recap over the concepts from Modules 1 to 3, working with R to visualise patterns in data and manipulate and summarise data.
+
+In this series of exercises we will use a dataset called `ClassicRock` This contains data on every song which was played in June 2014 on the 25 largest "Classic Rock" radio stations in America, and how many times each song was played. You can see this embedded below. The variables within the data are hopefully self explanatory - `Title`,`Artist`,`Year` and `TotalPlays`. Year indicates the year of release.
+
+```{r,echo=FALSE,warning-FALSE}
+DT::datatable(ClassicRock)
+```
+
+
+You can read more about the data here if you are interested: https://fivethirtyeight.com/features/why-classic-rock-isnt-what-it-used-to-be/
+(Although, as a warning, this may contain spoilers for some of the questions!)
+
+Like all good data analysis exercises, this exercise naturally comes with it's own Spotify playlist: https://open.spotify.com/playlist/1kgLJDMbs7nQeAtTW5VD17?si=KW80kH5WTyG791bCxrAVgQ
+
+
+Solutions are embedded in the chunks - but try to solve them yourself before looking!
+
+
+## Question 1
+
+*1.1 Produce a histogram based on the `Year` variable from the `ClassicRock` data. This will show the frequency distribution of unique songs per year*
+
+```{r gg1, exercise=TRUE}
+
+```
+
+```{r gg1-solution}
+ggplot(data=ClassicRock,aes(x=Year))+
+  geom_histogram()
+```
+
+*1.2 Make a scatter plot of year of release against total number of plays, and consider whether they might be any trend in this relationship. Also consider if you can see any major limitations of this particular choice of plot for these two variables*
+
+```{r gg2, exercise=TRUE}
+
+```
+
+```{r gg2-solution}
+ggplot(data=ClassicRock,aes(x=Year,y=TotalPlays))+
+  geom_point()+
+    geom_smooth()
+
+#It seems that not only are there more songs from the late 1970s, as seen clearly in the histogram, songs from that time period also have more plays than songs from earlier or later
+
+#A limitation here is that a lot of points may be on top of each other - e.g. where more than one song from the same year has the same number of plays
+```
+
+## Question 2
+*2.1: Find the mean, median and maximum number of times the songs from the `ClassicRock` data were played on the radio*
+
+```{r x10, exercise=TRUE}
+
+```
+
+```{r x10-solution}
+ClassicRock %>%
+  summarise(mean(TotalPlays),median(TotalPlays),max(TotalPlays))
+
+# you could also have solved this using the more straightforward, but less elegant, approach of writing 3 lines:
+mean(ClassicRock$TotalPlays)
+median(ClassicRock$TotalPlays)
+max(ClassicRock$TotalPlays)
+
+```
+*2.2: Find which song had the highest number of total plays*
+
+```{r x100, exercise=TRUE}
+
+```
+
+```{r x100-solution}
+
+#Could also be done using arrange to bring it to the top. 
+#Or using the number 142 from the previous question within the filter instead of max(TotalPlays)
+
+ClassicRock %>%
+  filter(TotalPlays==max(TotalPlays))
+```
+
+
+*2.3: I am interested to look at which songs of my favorite band, Van Halen, made it onto the radio stations. Use the filter function to produce a subset of just the songs of Van Halen*
+
+```{r x1, exercise=TRUE}
+
+```
+
+```{r x1-solution}
+#Remember the double equals in the logical statements
+#And correct use of quotation marks, and case of letters
+
+filter(ClassicRock,Artist=="Van Halen")
+```
+*2.4 Pipe from the solution of 2.3 into another function which can sort the songs of Van Halen, so that the song with the highest number of total plays is at the top*
+
+```{r x12, exercise=TRUE}
+
+```
+
+```{r x12-solution}
+filter(ClassicRock,Artist=="Van Halen") %>%
+  arrange(desc(TotalPlays))
+```
+
+*2.5 Although (or maybe because?) they are my favourite band, I refuse to acknowledge the music of Van Halen after the lead vocalist, David Lee Roth, left the band in 1985. So I would like to do some comparisons from this data between the amazing original lineup and the terrible replacement lineup. Pipe from the solution of 2.3 to create a new variable, called `LineUp` which takes the value 'Original' for the years up to and including 1985, and 'Replacement' for 1986 onwards*
+
+```{r x13,exercise=TRUE}
+
+```
+
+```{r x13-solution}
+filter(ClassicRock,Artist=="Van Halen") %>%
+  mutate(LineUp=ifelse(Year<=1985,"Original","Replacement"))
+
+
+#For any Van Halen purists, I am of course aware that there was a third, even worse, line up in the late 90s, and then a reformation of the original band more recently (minus the bassist).
+#But the data only contains songs from the first two 'eras' of the band so it's OK to simplify I think!
+```
+
+*2.6 Now piping from the output of 2.5, summarise the results by the new LineUp variable, to show both the number of different songs played on the radio and the sum of the number of total plays combined across the songs from each lineup of the band.*
+
+```{r x14, exercise=TRUE}
+
+```
+
+```{r x14-solution}
+filter(ClassicRock,Artist=="Van Halen") %>%
+  mutate(LineUp=ifelse(Year<=1985,"Original","Replacement")) %>%
+    group_by(LineUp) %>%
+      summarise(DifferentSongs=n(),SumTotal=sum(TotalPlays))
+
+#Phew sanity reigns!
+
+```
+## Question 3
+
+The questions in this section may have more than one method to get to the final answer, so the code in the solutions may not match exactly the route that you took. But the answers from running the code should be the same.
+
+Try to break down these questions into smaller chunks - which you can try to match to R functions you have learnt about. And try to work out all the steps that are going to be needed in advance. And check the result after every intermediate step, to make sure if it produced what you were expecting it to!
+
+*3.1 Determine which artist had the highest number of combined plays across all of their songs.*
+
+```{r x31, exercise=TRUE}
+
+```
+
+
+```{r x31-solution}
+
+#We first need to group by artist
+#Then summarise to get the sum of plays
+#And then filter to find the maximum of this sum
+
+
+
+ClassicRock %>% 
+  group_by(Artist) %>%
+    summarise(CombinedTotal=sum(TotalPlays)) %>%
+      filter(CombinedTotal==max(CombinedTotal))
+
+#And the answer is... Led Zeppelin
+```
+
+*3.2 Produce a line plot showing the trend over time in the total plays of all songs combined for each year of release. Label the axes clearly*
+
+```{r x33, exercise=TRUE}
+
+```
+
+
+
+```{r x33-solution}
+#We need to group by year and then summarise to get the total number of plays per year
+#And then pipe this into ggplot, and map up our aesthetics. FOr a classic line plot showing trends over time we would have the x axis being year and y axis being total plays
+#Then using the line geometry
+#And the labs functions for labelling
+
+ClassicRock %>%
+    group_by(Year) %>%
+      summarise(CombinedTotal=sum(TotalPlays)) %>%
+        ggplot(aes(y=CombinedTotal,x=Year))+
+         geom_line()+
+           labs(y="Total Combined Plays of Songs",x="Year of Release",title="Song Plays on Classic Rock Radio by Release Year")
+```
+
+
+*3.3 I would like to try to answer an age old question. Who is more popular - The Beatles or The Rolling Stones?* 
+
+*Make a plot similar to 3.2, showing total plays by year of release, but with one line for just songs by The Beatles and one line for just songs by The Rolling Stones. Only consider songs released up between 1960 and 1969.*
+
+*Use different colours for each band - yellow for The Beatles (like the submarine) and brown for The Rolling Stones (like the sugar). Modify the appearance of the plot so that the axis labels look nice, and also so that the lines can be seen clearly (but without changing from the suggested colours!)*
+
+```{r x3x, exercise=TRUE}
+
+```
+
+
+
+```{r x3x-solution}
+
+#first trick here. From some reason the Artist is coded in the data as "Rolling Stones" not "The Rolling Stones"
+
+#using a filter we can select these two artists using an OR statement - not an AND.
+#An and statement would be looking for any song which was performed by both The Beatles and also The Rolling Stones.
+
+#Then we can add artist into the group_by line to summarise by both artist and year.
+
+#The basic plot is then very similar to 3.2 - but with artist mapped to the colour aesthetic
+#I'm chosing to restrict the time range using the scale function within ggplot2; but you could also have made a filter for this
+
+#After you set my colour choices, using scale_colour_manual (making sure they are in the correct order), you should see two major visual problems with the graph:
+#1. The yellow is barely visible
+#2. The x axis is a little weirdly spaced
+
+#1 I can fix by using the themes - both colours will show up more clearly on a dark theme. I can use the build in dark theme by adding a call to theme_dark(). I also decided to make the lines a bit bigger using the size argument in geom_line so the lines are a bit more visible.
+#2. I set my own breaks in the scale_x_continuous function so that every year was labelled. This makes the axis easier to read.
+
+ClassicRock %>%
+  filter(Artist=="The Beatles" | Artist =="Rolling Stones") %>%
+    group_by(Artist,Year) %>%
+      summarise(CombinedTotal=sum(TotalPlays)) %>%
+        ggplot(aes(y=CombinedTotal,x=Year,colour=Artist))+
+         geom_line(size=2)+
+            scale_color_manual(values=c("brown","yellow"))+
+           labs(y="Total Combined Plays of Songs",x="Year of Release",
+                title="Song Plays on Classic Rock Radio by Release Year",subtitle="Beatles vs Stones")+
+            scale_x_continuous(limits=c(1961,1969),breaks=1961:1969)+
+              theme_dark()
+
+#Looking at the plot - I am surprised! There is only one release year when both bands are active, in which Beatles songs had more airplay than Stones.
+```
+
+
+
+
+
+
+*3.4 Find out the most popular "one-hit wonder" in classic rock radio. In other words - I would like to find the song with the highest number of plays, among artists who only had one of their songs played on the classic rock radio stations*
+
+
+```{r x32, exercise=TRUE}
+
+```
+
+
+```{r x32-solution}
+#There are a couple of tricks to get to this one
+
+#We need to first group by artist
+#We could use summarise here - but this will cause problems later. I am looking for a song rather than an artist
+#If i summarise I will lose the song titles from the data, since there is no way of summarising 'down' the song title
+#So I need to use mutate - to add the column into the existing data
+##Then filter to just those with 1 song
+#Then filter among that subset to the max of total plays
+#But before that last step I need to have ungrouped my data!
+#Otherwise it will look at the maximum value by artist, rather than the maximum value overall.
+#So after the mutate, which is the last operation i need to carry out group by group, i need to make sure i ungroup
+#Sequencing of the commands is crucial here! Flip the final two lines around, or combine them in the same line, or put the ungroup in the wrong place and you will not reach the correct answer
+
+
+
+ClassicRock %>% 
+  group_by(Artist) %>%
+    mutate(UniqueSongs=n()) %>%
+      ungroup() %>%
+      filter(UniqueSongs==1) %>%
+          filter(TotalPlays==max(TotalPlays))
+
+#American radio clearly need to learn some more Phil Collins songs. As if 'Against All Odds' isnt on their playlist!!?
+
+```
+
+
+
+*3.5 I am interested to find a list of artists who had extremely short, but very productive careers. Find me a list of artists where all of their songs in the data were released in the same calendar year, and who also have at least three songs with more than 5 plays*
+
+
+```{r x321, exercise=TRUE}
+
+
+```
+```{r x321-solution}
+
+#This one requires a little more lateral thinking!
+
+#If you see Metallica in your final output you have gone wrong.
+#(Although if you see Metallica in your own playlist, you have gone right) 
+
+#"All songs in the same calendar year" can be reframed, since only if this is true would the minimum year be equal to the maximum year
+#So we first group by artist
+#But here I next need to mutate rather than summarise. I still have further steps I need to make at 'song' level rather than 'artist' level
+#If I summarise i won't be able to consider the criteria on total plays - so instead I mutate which adds a new column to the original data
+#I can then filter to only include songs where first and last are equal
+#And then filter only to the songs where Total Plays is greater than 5. 
+#Note that the order matters here. If i did this step first, I would get an incorrect answer because Metallica would be included in my final answer. 
+#All of Metallica's songs with more than 5 plays came from within the same year. But they also had other songs with less than 5 plays from other years so they are not a correct answer.
+#Finally I can summarise the number of songs using n() - the grouping is carried forward from earlier
+#And filter to only those where there are 3 or more songs
+#I also specifcally asked just for the artist in the question so I threw in a select at the end for good measure
+
+ClassicRock %>% 
+  group_by(Artist) %>%
+    mutate(first=min(Year),last=max(Year)) %>%
+      filter(first==last) %>%
+        filter(TotalPlays>5) %>%
+          summarise(Over5Plays=n())%>%
+            filter(Over5Plays>=3) %>%
+              select(Artist)
+
+
+#Well done if you got the same answer here, even if you took a different route!
+
+```
+
+
+
+
+
+
